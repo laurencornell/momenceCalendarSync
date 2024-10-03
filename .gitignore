@@ -10,6 +10,10 @@
 /test/version_tmp/
 /tmp/
 
+.env
+/.idea
+google_api.json
+
 # Used by dotenv library to load environment variables.
 # .env
 
@@ -54,3 +58,6 @@ build-iPhoneSimulator/
 
 # Used by RuboCop. Remote config files pulled in from inherit_from directive.
 # .rubocop-https?--*
+
+# Ignore master key for decrypting credentials and more.
+/config/master.key
