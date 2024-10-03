@@ -23,6 +23,8 @@ class Calendar
   end
 
   def create_event(session)
+    existing = existing_event(session)
+
     starts_at = Google::Apis::CalendarV3::EventDateTime.new(date_time: DateTime.parse(session.startsAt))
     ends_at = Google::Apis::CalendarV3::EventDateTime.new(date_time: DateTime.parse(session.endsAt))
     title = session.sessionName
@@ -34,7 +36,7 @@ class Calendar
                                                 description: description,
                                                 location: location_address)
 
-    service.insert_event(ENV["GOOGLE_CALENDAR_ID"], event)
+    service.insert_event(ENV["GOOGLE_CALENDAR_ID"], event) unless existing
   end
 
   private
@@ -44,6 +46,10 @@ class Calendar
       "Location: #{session.location} \n" +
       "Instructor: #{session.teacher} \n\n" +
       "#{session.level}"
+  end
+
+  def existing_event(session)
+    events.find { |e| e.description.include?(session.link) }
   end
 
   def calendar_id
