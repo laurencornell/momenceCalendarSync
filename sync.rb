@@ -13,6 +13,4 @@ session_array.each do |session|
   next if session.type == "course"
 
   calendar.create_event(session)
-
-  break
 end

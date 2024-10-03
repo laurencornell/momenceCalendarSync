@@ -37,7 +37,11 @@ class Calendar
                                                 location: location_address)
 
     if existing
-      service.update_event(calendar_id, existing.id, event)
+      if session.isCancelled
+        service.delete_event(calendar_id, existing.id)
+      else
+        service.update_event(calendar_id, existing.id, event)
+      end
     else
       service.insert_event(calendar_id, event)
     end
