@@ -23,8 +23,8 @@ class Calendar
   end
 
   def create_event(session)
-    starts_at = Google::Apis::CalendarV3::EventDateTime.new(date: Date.parse(session.startsAt))
-    ends_at = Google::Apis::CalendarV3::EventDateTime.new(date: Date.parse(session.endsAt))
+    starts_at = Google::Apis::CalendarV3::EventDateTime.new(date_time: DateTime.parse(session.startsAt))
+    ends_at = Google::Apis::CalendarV3::EventDateTime.new(date_time: DateTime.parse(session.endsAt))
     title = session.sessionName
     description = format_description(session)
 
