@@ -1,6 +1,7 @@
 # http://www.rubydoc.info/github/google/google-api-ruby-client/Google/Apis/CalendarV3
 require 'googleauth'
 require 'google/apis/calendar_v3'
+require 'dotenv/load'
 
 class Calendar
 
@@ -31,8 +32,7 @@ class Calendar
     calendar.client_options.application_name = 'Momence Calendar Sync' # This is optional
     calendar.client_options.application_version = '0.1.0' # This is optional
 
-    # An alternative to the following line is to set the ENV variable directly 
-    # in the environment or use a gem that turns a YAML file into ENV variables
+
     scopes = [Google::Apis::CalendarV3::AUTH_CALENDAR]
     calendar.authorization = Google::Auth.get_application_default(scopes)
 

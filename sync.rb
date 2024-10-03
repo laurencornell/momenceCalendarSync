@@ -1,6 +1,8 @@
 require 'json'
 require 'net/http'
 require 'ostruct'
+require 'pry'
+require_relative 'calendar'
 
 uri = URI('https://readonly-api.momence.com/host-plugins/host/30822/host-schedule/sessions')
 data = Net::HTTP.get(uri)
