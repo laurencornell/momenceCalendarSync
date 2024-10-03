@@ -38,11 +38,14 @@ class Calendar
 
     if existing
       if session.isCancelled
+        puts("Deleting event #{existing.id}: #{title}")
         service.delete_event(calendar_id, existing.id)
       else
+        puts("Updating event #{existing.id}: #{title}")
         service.update_event(calendar_id, existing.id, event)
       end
     else
+      puts("Creating event #{title}")
       service.insert_event(calendar_id, event)
     end
   end
