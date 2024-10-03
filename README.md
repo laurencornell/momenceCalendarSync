@@ -41,6 +41,12 @@ cp env.sample .env
 14. Add the email you copied and select "Make changes to events" for permissions and save. 
 15. Under "Integrate Calendar", copy the "Calendar ID" and paste that in your .env file
 
+## Syncing multiple calendars
+By default, the application will run using the .env file. If multiple calendars need to be updated, create a new .env file for each calendar and pass these in as arguments
+```
+ruby sync.rb location_1.env location_2.env
+```
+
 ## Running the application
 ```
 ruby sync.rb
