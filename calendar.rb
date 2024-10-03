@@ -2,6 +2,7 @@
 require 'googleauth'
 require 'google/apis/calendar_v3'
 require 'dotenv/load'
+require 'pry'
 
 class Calendar
 
@@ -21,10 +22,36 @@ class Calendar
     @events ||= service.list_events(calendar_id, max_results: 2500).items
   end
 
+  def create_event(session)
+    starts_at = Google::Apis::CalendarV3::EventDateTime.new(date: Date.parse(session.startsAt))
+    ends_at = Google::Apis::CalendarV3::EventDateTime.new(date: Date.parse(session.endsAt))
+    title = session.sessionName
+    description = format_description(session)
+
+    event = Google::Apis::CalendarV3::Event.new(start: starts_at,
+                                                end: ends_at,
+                                                summary: title,
+                                                description: description,
+                                                location: location_address)
+
+    service.insert_event(ENV["GOOGLE_CALENDAR_ID"], event)
+  end
+
   private
+
+  def format_description(session)
+    "Sign up link: #{session.link} \n" +
+      "Location: #{session.location} \n" +
+      "Instructor: #{session.teacher} \n\n" +
+      "#{session.level}"
+  end
 
   def calendar_id
     @calendar_id ||= ENV.fetch("GOOGLE_CALENDAR_ID", "")
+  end
+
+  def location_address
+    @location_address ||=ENV.fetch("LOCATION_ADDRESS", "")
   end
 
   def authorize
