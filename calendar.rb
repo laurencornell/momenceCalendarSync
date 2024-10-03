@@ -36,7 +36,11 @@ class Calendar
                                                 description: description,
                                                 location: location_address)
 
-    service.insert_event(ENV["GOOGLE_CALENDAR_ID"], event) unless existing
+    if existing
+      service.update_event(calendar_id, existing.id, event)
+    else
+      service.insert_event(calendar_id, event)
+    end
   end
 
   private
