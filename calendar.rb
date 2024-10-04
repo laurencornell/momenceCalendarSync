@@ -3,11 +3,13 @@ require 'googleauth'
 require 'google/apis/calendar_v3'
 require 'dotenv/load'
 require 'pry'
+require 'active_support/time'
 
 class Calendar
 
-  def initialize
+  def initialize(logger)
     authorize
+    @logger = logger
   end
 
   def service
@@ -38,14 +40,14 @@ class Calendar
 
     if existing
       if session.isCancelled
-        puts("Deleting event #{existing.id}: #{title}")
+        @logger.info("Deleting event #{existing.id}: #{title} at #{starts_at.date_time.localtime}")
         service.delete_event(calendar_id, existing.id)
       else
-        puts("Updating event #{existing.id}: #{title}")
+        @logger.info("Updating event #{existing.id}: #{title} at #{starts_at.date_time.localtime}")
         service.update_event(calendar_id, existing.id, event)
       end
-    else
-      puts("Creating event #{title}")
+    elsif !session.isCancelled
+      @logger.info("Creating event #{title} at #{starts_at.date_time.localtime}")
       service.insert_event(calendar_id, event)
     end
   end
