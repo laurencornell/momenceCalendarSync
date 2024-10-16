@@ -44,7 +44,13 @@ cp env.sample .env
 ## Syncing multiple calendars
 By default, the application will run using the .env file. If multiple calendars need to be updated, create a new .env file for each calendar and pass these in as arguments
 ```
-ruby sync.rb location_1.env location_2.env
+ruby sync.rb --env=location_1.env,location_2.env
+```
+
+## Logging
+By default, all logs will be written to sync.log only. Logs can also be printed in console with the --stdout flag. Created/deleted events are logged at info, while updated events are logged at debug.
+```
+ruby sync.rb --stdout=info
 ```
 
 ## Running the application

@@ -21,7 +21,7 @@ class Calendar
     # If you have more than 2500 results, you'll need to get more than    
     # one set of results.
     @events = nil if reload
-    @events ||= service.list_events(calendar_id, max_results: 2500).items
+    @events ||= service.list_events(calendar_id, max_results: 2500, time_min: DateTime.now).items
   end
 
   def create_event(session)
@@ -43,12 +43,20 @@ class Calendar
         @logger.info("Deleting event #{existing.id}: #{title} at #{starts_at.date_time.localtime}")
         service.delete_event(calendar_id, existing.id)
       else
-        @logger.info("Updating event #{existing.id}: #{title} at #{starts_at.date_time.localtime}")
+        @logger.debug("Updating event #{existing.id}: #{title} at #{starts_at.date_time.localtime}")
         service.update_event(calendar_id, existing.id, event)
       end
+      events.delete(existing)
     elsif !session.isCancelled
       @logger.info("Creating event #{title} at #{starts_at.date_time.localtime}")
       service.insert_event(calendar_id, event)
+    end
+  end
+
+  def delete_remaining_events
+    events.each do |e|
+      @logger.info("Deleting event #{e.id}: #{e.summary} at #{e.start.date_time.localtime}")
+      service.delete_event(calendar_id, e.id)
     end
   end
 

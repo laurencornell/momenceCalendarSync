@@ -1,16 +1,38 @@
+require 'active_support/logger_silence'
+require 'active_support/broadcast_logger'
 require 'dotenv/load'
 require 'json'
 require 'logger'
 require 'net/http'
+require 'optparse'
 require 'ostruct'
 require 'pry'
 require_relative 'calendar'
 
-env_files = ARGV
-env_files = ['.env'] if env_files.empty?
-logger = Logger.new('sync.log')
+LEVELS = {
+  "debug" => Logger::DEBUG,
+  "info" => Logger::INFO,
+  "warn" => Logger::WARN,
+  "error" => Logger::ERROR,
+  "fatal" => Logger::FATAL,
+  "unknown" => Logger::UNKNOWN,
+}
 
-env_files.each do |env|
+options = { env: ['.env'], stdout: Logger::INFO}
+OptionParser.new do |opt|
+  opt.on('--env=ENVS') { |o| options[:env] = o.split(",") }
+  opt.on('--stdout=LEVEL') { |o| options[:stdout] = LEVELS[o] }
+end.parse!
+
+file_logger = Logger.new('sync.log', 'weekly')
+logger = if options[:stdout]
+           stdout_logger = Logger.new(STDOUT, level: options[:stdout])
+           ActiveSupport::BroadcastLogger.new(stdout_logger, file_logger)
+         else
+           file_logger
+         end
+
+options[:env].each do |env|
   Dotenv.load(env, overwrite: true)
   host_id = ENV["MOMENCE_HOST_ID"]
   logger.info("Updating host #{host_id} with #{env}")
@@ -25,4 +47,6 @@ env_files.each do |env|
 
     calendar.create_event(session)
   end
+
+  calendar.delete_remaining_events
 end
