@@ -18,7 +18,7 @@ LEVELS = {
   "unknown" => Logger::UNKNOWN,
 }
 
-options = { env: ['.env'], stdout: Logger::INFO}
+options = { env: ['.env'] }
 OptionParser.new do |opt|
   opt.on('--env=ENVS') { |o| options[:env] = o.split(",") }
   opt.on('--stdout=LEVEL') { |o| options[:stdout] = LEVELS[o] }
